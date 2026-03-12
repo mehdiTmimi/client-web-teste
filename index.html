@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibliothèque - Gestion des Livres</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/main.js" defer></script>
+</head>
+<body>
+
+    <!-- ============ HEADER ============ -->
+    <header class="header">
+        <div class="header-inner">
+            <span class="header-icon">📚</span>
+            <h1>Bibliothèque</h1>
+            <p class="header-sub">Gestion des Livres</p>
+        </div>
+    </header>
+
+    <!-- ============ TOOLBAR ============ -->
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <input type="text" id="searchInput" class="search-input" placeholder="Rechercher un livre…">
+        </div>
+        <div class="toolbar-right">
+            <button class="btn btn-primary" onclick="openModal('addModal')">
+                <span class="btn-icon">＋</span> Ajouter un livre
+            </button>
+        </div>
+    </div>
+
+    <!-- ============ TABLE ============ -->
+    <main class="main">
+        <div class="table-wrapper">
+            <table class="book-table" id="bookTable">
+                <thead>
+                    <tr>
+                        <th>Référence</th>
+                        <th>Nom du livre</th>
+                        <th>Date</th>
+                        <th>Auteur</th>
+                        <th class="th-actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bookTableBody">
+                    <!-- Exemple de ligne (à dupliquer via JS) -->
+                    <tr>
+                        <td data-label="Référence">BK-007</td>
+                        <td data-label="Nom">Domain-Driven Design</td>
+                        <td data-label="Date">2003-08-30</td>
+                        <td data-label="Auteur">Mehdi</td>
+                        <td data-label="Actions" class="td-actions">
+                            <button class="btn btn-edit" onclick="openEditModal(this)">✏️ Modifier</button>
+                            <button class="btn btn-delete" onclick="openDeleteModal(this)">🗑️ Supprimer</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td data-label="Référence">BK-012</td>
+                        <td data-label="Nom">Clean Code</td>
+                        <td data-label="Date">2008-08-01</td>
+                        <td data-label="Auteur">Robert C. Martin</td>
+                        <td data-label="Actions" class="td-actions">
+                            <button class="btn btn-edit" onclick="openEditModal(this)">✏️ Modifier</button>
+                            <button class="btn btn-delete" onclick="openDeleteModal(this)">🗑️ Supprimer</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td data-label="Référence">BK-019</td>
+                        <td data-label="Nom">Design Patterns</td>
+                        <td data-label="Date">1994-10-31</td>
+                        <td data-label="Auteur">Gang of Four</td>
+                        <td data-label="Actions" class="td-actions">
+                            <button class="btn btn-edit" onclick="openEditModal(this)">✏️ Modifier</button>
+                            <button class="btn btn-delete" onclick="openDeleteModal(this)">🗑️ Supprimer</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state" id="emptyState" style="display:none;">
+            <span class="empty-icon">📖</span>
+            <p>Aucun livre dans la bibliothèque.</p>
+            <button class="btn btn-primary" onclick="openModal('addModal')">Ajouter votre premier livre</button>
+        </div>
+    </main>
+
+    <!-- ============ MODAL : AJOUTER ============ -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>📕 Ajouter un livre</h2>
+                <button class="modal-close" onclick="closeModal('addModal')">&times;</button>
+            </div>
+            <form class="modal-body" id="addForm" onsubmit="handleAdd(event)">
+                <div class="form-group">
+                    <label for="addRef">Référence</label>
+                    <input type="text" id="addRef" name="ref" placeholder="BK-001" required>
+                </div>
+                <div class="form-group">
+                    <label for="addName">Nom du livre</label>
+                    <input type="text" id="addName" name="name" placeholder="Titre du livre" required>
+                </div>
+                <div class="form-group">
+                    <label for="addDate">Date</label>
+                    <input type="date" id="addDate" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="addAuthor">Auteur</label>
+                    <input type="text" id="addAuthor" name="author" placeholder="Nom de l'auteur" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" onclick="closeModal('addModal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============ MODAL : MODIFIER ============ -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>📝 Modifier le livre</h2>
+                <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+            </div>
+            <form class="modal-body" id="editForm" onsubmit="handleEdit(event)">
+                <div class="form-group">
+                    <label for="editRef">Référence</label>
+                    <input type="text" id="editRef" name="ref" placeholder="BK-001" required>
+                </div>
+                <div class="form-group">
+                    <label for="editName">Nom du livre</label>
+                    <input type="text" id="editName" name="name" placeholder="Titre du livre" required>
+                </div>
+                <div class="form-group">
+                    <label for="editDate">Date</label>
+                    <input type="date" id="editDate" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="editAuthor">Auteur</label>
+                    <input type="text" id="editAuthor" name="author" placeholder="Nom de l'auteur" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" onclick="closeModal('editModal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============ MODAL : SUPPRIMER ============ -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal modal-sm">
+            <div class="modal-header modal-header-danger">
+                <h2>🗑️ Confirmer la suppression</h2>
+                <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="delete-msg">Êtes-vous sûr de vouloir supprimer le livre <strong id="deleteBookName"></strong> ?</p>
+                <p class="delete-warn">Cette action est irréversible.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" onclick="closeModal('deleteModal')">Annuler</button>
+                <button class="btn btn-danger" onclick="handleDelete()">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS (à compléter) -->
+    <script src="js/app.js"></script>
+</body>
+</html>
